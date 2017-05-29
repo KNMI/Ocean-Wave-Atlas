@@ -1,0 +1,56 @@
+========================================================================================================================
+veranderingen versie 1.1 t.o.v. versie 1.0
+========================================================================================================================
+25-02-2004 - Quality.hlp en climatology.hlp aangepast
+           - afmetingen OK button op about form iets aangepast (nu 75 - 25 i.p.v. 76 - 23)
+           - om run time error te voorkomen de maxlegth (object inspextor van de edit boxen inop forecast settings form
+             op 200 gezet (255 gaf nog een run time error)
+
+
+========================================================================================================================
+veranderingen versie 2.1 t.o.v. versie 2.0
+========================================================================================================================
+11-10-2006 - gecompileeerd net CBuilder 6
+               Aboutbox: - andere OK button geen bitmapbutton maar gewone
+                         - geen tab stop op link (kreeg anders focus met een blauw veld)
+12-10-2006 - south pacific all month wees naar south atlantic all months, dit nu goed gezet
+           - toegevoegd: - 100 year return value
+                         - exceedences 3m/6m/9m
+                         - yearly means/sd hs en period
+           - NB ook default.txt en internet.txt (folder settings) aangepast aan nieuwe website
+01-11-2006 - andere desktop bepaal methode (nu maar 2 jpg desktop fotos)
+
+========================================================================================================================
+veranderingen versie 2.2 t.o.v. versie 2.1
+========================================================================================================================
+28-02-2007 - voor kunnen tonen chm files:
+
+                1] #include "htmlhelp.h"
+
+                2] in constructor [main.cpp]
+                   /* laden HTMLHelp OCX voor HTML (chm) help */
+                   hHelpOCX = ::LoadLibrary("hhctrl.ocx");
+                   if (!hHelpOCX)
+                     ::MessageBox(0, "Cannot use the html help", "TurboWin Error", MB_OK | MB_ICONERROR);
+
+                3] in main.h (private section)
+                   // voor HTMLHelp (chm)
+                   typedef HWND WINAPI (*HtmlHelpFunc)( HWND hwndCaller, LPCSTR pszFile, UINT uCommand, DWORD dwData );
+                   HtmlHelpFunc HTMLHelp;
+                   HINSTANCE hHelpOCX;
+
+                4] voorbeeld chm help file aanroep
+                   void __fastcall TForm1::InfoDataSourcesClick(TObject *Sender)
+                   {
+                      AnsiString volledig_help_path = "";
+                      volledig_help_path = global_climate_atlas_root_path + help_sub_dir + "DATA.CHM";
+                      HTMLHelp = (HtmlHelpFunc)::GetProcAddress(hHelpOCX, ATOM_HTMLHELP_API_ANSI);
+                      HTMLHelp(0, volledig_help_path.c_str(), HH_DISPLAY_TOPIC, 0);
+                    }
+                5] // tegehanger van punt 2) [voor de zekerheid als chm niet alleen vanuit mainform wordt opgeroepen]
+                   void __fastcall TForm1::FormDestroy(TObject *Sender)
+                   {
+                      // voor chm HTMLHelp
+                      ::FreeLibrary("hhctrl.ocx");
+                   }
+
